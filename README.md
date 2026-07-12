@@ -1,0 +1,29 @@
+# Reto 7D Coach — Prototipo web
+
+Prototipo navegable de la app **Reto 7D Coach**: un reto interactivo de 7 días guiado por una coach ontológica profesional, pensado como herramienta de marketing y generación de clientes (ver documento de diseño / GDD).
+
+**Demo online:** https://joaquingasperetti.github.io/AppCoach/
+
+> 💡 El prototipo está orientado a **dispositivos móviles**. En una computadora, se recomienda abrirlo con las herramientas de desarrollador en modo móvil, o directamente desde el teléfono.
+
+## Qué incluye el prototipo
+
+- **Pantalla de bienvenida** con explicación del reto y disclaimer legal.
+- **Reto de 7 días**: cada día tiene consigna, audio de la coach y actividad reflexiva. Los días se desbloquean al completar el anterior.
+- **Audio de demostración**: se usa la voz sintetizada del dispositivo para simular los audios. En la versión final se reemplazan por los audios reales de la coach.
+- **Progreso persistente**: el avance y las reflexiones se guardan en el dispositivo (localStorage).
+- **Monetización simulada**: banner en el inicio, anuncio a pantalla completa al completar un día, anuncio voluntario (recompensado) para desbloquear afirmaciones extra y opción "quitar anuncios" (compra simulada).
+- **Conversión a clientes**: invitación a reservar sesión al completar el día 3 y el día 7 (con descuento). Los enlaces de WhatsApp/email son de demostración.
+- **Aviso legal** visible: la app no reemplaza procesos terapéuticos.
+
+## Para revisar todo rápido
+
+En el menú (☰) hay un **modo demo** que desbloquea los 7 días, y un botón para **reiniciar el reto**.
+
+## Contenido editable
+
+Los textos, consignas y guiones de audio de los 7 días están en [`js/content.js`](js/content.js) y pueden reemplazarse por el contenido definitivo de la coach sin tocar el resto del código.
+
+## Tecnología
+
+HTML, CSS y JavaScript puros, sin dependencias. Funciona como sitio estático (GitHub Pages).

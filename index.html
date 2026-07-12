@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Reto 7D Coach</title>
+  <meta name="description" content="Reto interactivo de 7 días guiado por tu coach ontológica. 3 minutos por día para transformar tu diálogo interior." />
+  <meta name="theme-color" content="#3E5C4B" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233E5C4B'/%3E%3Ctext x='32' y='42' font-family='Georgia' font-size='28' fill='%23F5EFE4' text-anchor='middle'%3E7D%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- ═══════════ BIENVENIDA ═══════════ -->
+    <section id="view-welcome" class="view">
+      <div class="welcome-hero">
+        <div class="logo-mark">7D</div>
+        <h1 class="app-title">Reto 7D Coach</h1>
+        <p class="app-tagline">7 días · 3 minutos por día<br />para transformar tu diálogo interior</p>
+      </div>
+
+      <div class="welcome-body">
+        <ul class="welcome-list">
+          <li>
+            <span class="wl-icon">🎧</span>
+            <div><strong>Escuchá</strong> un audio breve de tu coach cada día</div>
+          </li>
+          <li>
+            <span class="wl-icon">✍️</span>
+            <div><strong>Reflexioná</strong> con una mini actividad guiada</div>
+          </li>
+          <li>
+            <span class="wl-icon">🌱</span>
+            <div><strong>Construí</strong> una nueva forma de mirarte</div>
+          </li>
+        </ul>
+
+        <div class="disclaimer-box">
+          <strong>Importante:</strong> esta app es una herramienta de desarrollo personal y no reemplaza procesos terapéuticos. Ante una situación de crisis, acudí a un profesional de la salud.
+        </div>
+
+        <button id="btn-start" class="btn btn-primary btn-big">Comenzar el reto</button>
+        <p class="welcome-coach">Guiado por <strong>tu Coach Ontológica Profesional</strong></p>
+      </div>
+    </section>
+
+    <!-- ═══════════ INICIO ═══════════ -->
+    <section id="view-home" class="view">
+      <header class="home-header">
+        <div class="home-brand">
+          <div class="logo-mark logo-sm">7D</div>
+          <span>Reto 7D Coach</span>
+        </div>
+        <button id="btn-settings" class="icon-btn" aria-label="Menú y ajustes">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </header>
+
+      <div class="progress-card">
+        <div class="progress-text">
+          <span id="progress-label">Día 1 de 7</span>
+          <span id="progress-count" class="progress-count">0/7 completados</span>
+        </div>
+        <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
+        <p id="progress-hint" class="progress-hint">Empezá hoy: son solo 3 minutos.</p>
+      </div>
+
+      <div id="day-list" class="day-list"></div>
+
+      <div id="extra-card" class="extra-card">
+        <div class="extra-card-text">
+          <strong>🎁 Afirmaciones extra</strong>
+          <p id="extra-card-desc">Mirá un anuncio breve para desbloquear 7 afirmaciones de regalo.</p>
+        </div>
+        <button id="btn-extra" class="btn btn-ghost btn-sm">Desbloquear</button>
+      </div>
+
+      <p class="footer-disclaimer">
+        Esta app no reemplaza procesos terapéuticos. <button id="btn-legal" class="link-btn">Ver aviso legal</button>
+      </p>
+
+      <div id="ad-banner" class="ad-banner">
+        <span class="ad-tag">Publicidad</span>
+        <span class="ad-banner-text">Espacio para banner publicitario · 320×50</span>
+      </div>
+    </section>
+
+    <!-- ═══════════ DÍA ═══════════ -->
+    <section id="view-day" class="view">
+      <header class="day-header">
+        <button id="btn-back" class="icon-btn" aria-label="Volver">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span id="day-badge" class="day-badge">Día 1</span>
+        <span class="header-spacer"></span>
+      </header>
+
+      <h2 id="day-title" class="day-title"></h2>
+
+      <div class="card consigna-card">
+        <span class="card-label">Consigna del día</span>
+        <p id="day-consigna"></p>
+      </div>
+
+      <div class="card audio-card">
+        <span class="card-label">Audio de tu coach</span>
+        <div class="audio-player">
+          <button id="btn-play" class="play-btn" aria-label="Reproducir audio">
+            <svg id="icon-play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+            <svg id="icon-pause" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" style="display:none"><rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/></svg>
+          </button>
+          <div class="audio-track">
+            <div class="waveform" id="waveform"></div>
+            <div class="audio-times"><span id="audio-current">0:00</span><span id="audio-total">0:30</span></div>
+          </div>
+        </div>
+        <p class="audio-note">Voz de demostración generada por tu dispositivo. En la versión final vas a escuchar el audio real de la coach.</p>
+      </div>
+
+      <div class="card activity-card">
+        <span class="card-label">Tu momento de reflexión</span>
+        <p id="day-activity"></p>
+        <textarea id="day-reflection" rows="4" placeholder="Escribí acá tu reflexión… (queda guardada solo en tu dispositivo)"></textarea>
+      </div>
+
+      <button id="btn-complete" class="btn btn-primary btn-big">Completar el día ✓</button>
+      <p id="day-completed-note" class="day-completed-note" hidden>✓ Ya completaste este día. Podés releerlo o editar tu reflexión.</p>
+    </section>
+
+    <!-- ═══════════ DÍA COMPLETADO ═══════════ -->
+    <section id="view-done" class="view view-center">
+      <div class="done-check">✓</div>
+      <h2 id="done-title" class="done-title">¡Día completado!</h2>
+      <p id="done-quote" class="done-quote"></p>
+      <div class="progress-bar progress-bar-lg" id="done-progress"></div>
+      <p id="done-progress-label" class="done-progress-label"></p>
+
+      <div id="done-cta" class="cta-card" hidden>
+        <span id="cta-badge" class="cta-badge">Beneficio especial</span>
+        <h3 id="cta-title">¿Te gustaría ir más profundo?</h3>
+        <p id="cta-text">Reservá una sesión de coaching individual y trabajemos juntos lo que apareció en estos días.</p>
+        <button id="btn-book" class="btn btn-accent btn-big">Reservar mi sesión</button>
+      </div>
+
+      <button id="btn-done-home" class="btn btn-ghost btn-big">Volver al inicio</button>
+    </section>
+  </div>
+
+  <!-- ═══════════ OVERLAY: ANUNCIO INTERSTICIAL ═══════════ -->
+  <div id="overlay-ad" class="overlay" hidden>
+    <div class="ad-interstitial">
+      <span class="ad-tag">Publicidad · Simulación</span>
+      <div class="ad-fake">
+        <div class="ad-fake-art">📢</div>
+        <p>Aquí se mostrará un anuncio<br />a pantalla completa</p>
+        <small>Solo al finalizar un día, de forma moderada</small>
+      </div>
+      <button id="btn-ad-close" class="btn btn-ghost btn-big" disabled>Continuar en 5…</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ OVERLAY: ANUNCIO RECOMPENSADO ═══════════ -->
+  <div id="overlay-reward" class="overlay" hidden>
+    <div class="ad-interstitial">
+      <span class="ad-tag">Anuncio voluntario · Simulación</span>
+      <div class="ad-fake">
+        <div class="ad-fake-art">🎬</div>
+        <p>Mirando anuncio para<br />desbloquear contenido extra…</p>
+        <small>El usuario elige verlo, nunca es obligatorio</small>
+      </div>
+      <button id="btn-reward-close" class="btn btn-ghost btn-big" disabled>Desbloqueando en 5…</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: RESERVA ═══════════ -->
+  <div id="modal-book" class="overlay" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close="modal-book" aria-label="Cerrar">✕</button>
+      <div class="modal-icon">🗓️</div>
+      <h3>Reservá tu sesión</h3>
+      <p id="book-discount" class="book-discount" hidden>🎉 Por completar el reto: <strong>20% de descuento</strong> en tu primera sesión</p>
+      <p>Una sesión individual de coaching ontológico para profundizar lo que descubriste en el reto.</p>
+      <a id="btn-book-wa" class="btn btn-primary btn-big" href="https://wa.me/5491100000000?text=Hola!%20Complet%C3%A9%20el%20Reto%207D%20y%20quiero%20reservar%20una%20sesi%C3%B3n" target="_blank" rel="noopener">Reservar por WhatsApp</a>
+      <a id="btn-book-mail" class="btn btn-ghost btn-big" href="mailto:coach@ejemplo.com?subject=Quiero%20reservar%20una%20sesi%C3%B3n%20(Reto%207D)">Reservar por email</a>
+      <small class="modal-note">Enlaces de demostración: se configurarán con el contacto real de la coach.</small>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: AFIRMACIONES EXTRA ═══════════ -->
+  <div id="modal-extra" class="overlay" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close="modal-extra" aria-label="Cerrar">✕</button>
+      <div class="modal-icon">🎁</div>
+      <h3>Afirmaciones para tu semana</h3>
+      <ul id="extra-list" class="extra-list"></ul>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: AVISO LEGAL ═══════════ -->
+  <div id="modal-legal" class="overlay" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close="modal-legal" aria-label="Cerrar">✕</button>
+      <div class="modal-icon">⚕️</div>
+      <h3>Aviso importante</h3>
+      <p>Esta aplicación es una herramienta de acompañamiento y desarrollo personal basada en coaching ontológico.</p>
+      <p><strong>No reemplaza procesos terapéuticos</strong> ni tratamientos de salud mental de ningún tipo.</p>
+      <p>Si estás atravesando una crisis emocional o una situación de riesgo, contactá de inmediato a un profesional de la salud o a los servicios de emergencia de tu zona.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════ PANEL: AJUSTES ═══════════ -->
+  <div id="sheet-settings" class="overlay overlay-bottom" hidden>
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <h3>Menú</h3>
+
+      <button id="set-premium" class="sheet-item">
+        <span class="sheet-item-icon">✨</span>
+        <span class="sheet-item-text">
+          <strong id="premium-title">Quitar anuncios</strong>
+          <small id="premium-desc">Versión premium · USD 2,99 (simulación)</small>
+        </span>
+      </button>
+
+      <button id="set-extra" class="sheet-item">
+        <span class="sheet-item-icon">🎁</span>
+        <span class="sheet-item-text">
+          <strong>Afirmaciones extra</strong>
+          <small id="set-extra-desc">Desbloqueá contenido viendo un anuncio</small>
+        </span>
+      </button>
+
+      <button id="set-demo" class="sheet-item">
+        <span class="sheet-item-icon">🔓</span>
+        <span class="sheet-item-text">
+          <strong>Modo demo</strong>
+          <small id="demo-desc">Desbloquear los 7 días para revisar el prototipo</small>
+        </span>
+      </button>
+
+      <button id="set-book" class="sheet-item">
+        <span class="sheet-item-icon">🗓️</span>
+        <span class="sheet-item-text">
+          <strong>Reservar una sesión</strong>
+          <small>Coaching ontológico individual</small>
+        </span>
+      </button>
+
+      <button id="set-legal" class="sheet-item">
+        <span class="sheet-item-icon">⚕️</span>
+        <span class="sheet-item-text">
+          <strong>Aviso legal</strong>
+          <small>Esta app no reemplaza terapia</small>
+        </span>
+      </button>
+
+      <button id="set-reset" class="sheet-item sheet-item-danger">
+        <span class="sheet-item-icon">↺</span>
+        <span class="sheet-item-text">
+          <strong>Reiniciar el reto</strong>
+          <small>Borra tu progreso y reflexiones</small>
+        </span>
+      </button>
+
+      <p class="sheet-footer">Reto 7D Coach · Prototipo v0.1</p>
+    </div>
+  </div>
+
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
