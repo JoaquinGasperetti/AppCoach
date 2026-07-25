@@ -1,0 +1,8 @@
+{
+  "appId": "com.retocoach.app",
+  "appName": "Reto 7D Coach",
+  "webDir": "docs",
+  "android": {
+    "backgroundColor": "#EFE9DE"
+  }
+}

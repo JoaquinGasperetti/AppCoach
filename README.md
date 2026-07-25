@@ -22,8 +22,24 @@ En el menú (☰) hay un **modo demo** que desbloquea los 7 días, y un botón p
 
 ## Contenido editable
 
-Los textos, consignas y guiones de audio de los 7 días están en [`js/content.js`](js/content.js) y pueden reemplazarse por el contenido definitivo de la coach sin tocar el resto del código.
+Los textos, consignas y guiones de audio de los 7 días están en [`docs/js/content.js`](docs/js/content.js) y pueden reemplazarse por el contenido definitivo de la coach sin tocar el resto del código.
 
 ## Tecnología
 
-HTML, CSS y JavaScript puros, sin dependencias. Funciona como sitio estático (GitHub Pages).
+HTML, CSS y JavaScript puros, sin dependencias. Funciona como sitio estático (GitHub Pages) y como app Android vía [Capacitor](https://capacitorjs.com).
+
+## Estructura
+
+```
+docs/                    la app (GitHub Pages sirve desde acá, y Capacitor la empaqueta)
+  index.html
+  css/styles.css
+  js/content.js          contenido de los 7 días — editable sin tocar el código
+  js/app.js              lógica de la app
+capacitor.config.json    configuración de la app Android
+ANDROID.md               guía para compilar y publicar en Google Play
+```
+
+## Publicar en Google Play
+
+Ver [ANDROID.md](ANDROID.md): qué instalar, cómo generar el proyecto Android y el checklist de Play Console.

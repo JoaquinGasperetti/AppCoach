@@ -1,0 +1,17 @@
+{
+  "name": "reto-7d-coach",
+  "version": "0.1.0",
+  "description": "Reto interactivo de 7 días guiado por una coach ontológica profesional",
+  "private": true,
+  "scripts": {
+    "sync": "cap sync",
+    "android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}
