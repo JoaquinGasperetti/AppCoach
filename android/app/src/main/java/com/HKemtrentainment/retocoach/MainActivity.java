@@ -1,4 +1,4 @@
-package com.retocoach.app;
+package com.HKemtrentainment.retocoach;
 
 import com.getcapacitor.BridgeActivity;
 

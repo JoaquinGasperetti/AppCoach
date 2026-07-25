@@ -53,9 +53,19 @@ El APK queda en `android/app/build/outputs/apk/debug/app-debug.apk` (~4 MB). La 
 
 ## 3. El identificador de la app
 
-Está en `capacitor.config.json` como `appId`, hoy con el valor provisional `com.retocoach.app`.
+El identificador definitivo es **`com.HKemtrentainment.retocoach`**.
 
-> ⚠️ **Cambialo antes de la primera publicación.** Una vez que la app está en Play, el `appId` no se puede modificar nunca más: para cambiarlo habría que publicar una app nueva y perder descargas y reseñas. Si lo tocás, hacelo antes de correr `npx cap add android`.
+> ⚠️ **No se puede cambiar después de publicar.** Una vez que la app está en Play, el `appId` queda fijo para siempre: modificarlo obliga a publicar una app nueva, perdiendo descargas y reseñas. Verificá que esté bien escrito antes de la primera subida.
+
+Vive en cinco lugares que tienen que coincidir. Si alguna vez hay que cambiarlo, hay que tocar los cinco:
+
+| Archivo | Qué contiene |
+|---|---|
+| `capacitor.config.json` | `appId` |
+| `android/app/build.gradle` | `namespace` y `applicationId` |
+| `android/app/src/main/res/values/strings.xml` | `package_name` y `custom_url_scheme` |
+| `android/app/src/main/java/com/HKemtrentainment/retocoach/` | la ruta de carpetas del código |
+| `MainActivity.java` | la línea `package` |
 
 ## 4. Lo que falta implementar
 

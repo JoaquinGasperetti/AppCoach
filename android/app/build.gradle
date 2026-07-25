@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.retocoach.app"
+    namespace = "com.HKemtrentainment.retocoach"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.retocoach.app"
+        applicationId "com.HKemtrentainment.retocoach"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
