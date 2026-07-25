@@ -115,17 +115,45 @@ npm install -D @capacitor/assets
 
 Se coloca un ícono de 1024×1024 en `assets/icon.png` y el plugin genera todos los tamaños que Android necesita.
 
-## 5. Compilar para publicar
+## 5. Firma de la app
 
-En Android Studio: **Build → Generate Signed Bundle / APK → Android App Bundle**.
+**Ya está configurada.** El keystore existe y Gradle lo usa automáticamente para la variante `release`.
 
-Play exige formato **AAB**, no APK. La primera vez te va a pedir crear un *keystore*: es el archivo que firma la app.
+| | |
+|---|---|
+| Keystore | `retocoach-upload.jks` (raíz del proyecto) |
+| Alias | `retocoach` |
+| Algoritmo | RSA 2048 · SHA384withRSA |
+| Válido hasta | 10 de diciembre de 2053 |
+| SHA-1 | `65:2C:F3:C7:CB:62:35:69:9C:DF:34:C7:E3:73:96:C4:44:AF:5A:F4` |
+| SHA-256 | `93:65:5F:DA:82:15:10:3D:59:BA:19:86:61:88:FE:4B:18:44:6D:61:05:9E:A1:C8:18:14:EC:40:93:02:9C:94` |
 
-> 🔑 **Guardá el keystore y su contraseña en un lugar seguro y con backup.** Si lo perdés, no podés volver a actualizar la app nunca más. Activá también *Play App Signing* en la consola, que te da una red de seguridad ante ese escenario. El `.gitignore` ya está configurado para que el keystore no se suba al repositorio por accidente.
+Las credenciales viven en `android/keystore.properties`, que **no está en el repositorio**. Junto con el `.jks`, son los dos archivos que hay que copiar a mano si trabajás desde otra computadora. Si faltan, el proyecto igual compila: solo avisa que el release sale sin firmar.
 
-## 6. Checklist de Play Console
+Para confirmar en cualquier momento que la firma está bien enganchada, sin generar ningún archivo:
 
-- [ ] Definir el `appId` definitivo (antes de publicar)
+```bash
+cd android && ./gradlew :app:signingReport
+```
+
+> 🔑 **Hacé backup del `.jks` y su contraseña.** Con Play App Signing —obligatorio para apps nuevas— este archivo es la *clave de subida*, no la de firma real, así que si se pierde o se filtra Google puede resetearla. Aun así, recuperarla es un trámite que frena cualquier actualización urgente.
+
+## 6. Generar el AAB para publicar
+
+Play exige formato **AAB**, no APK:
+
+```bash
+cd android && ./gradlew bundleRelease
+```
+
+Queda en `android/app/build/outputs/bundle/release/app-release.aab`, ya firmado. También se puede desde Android Studio con **Build → Generate Signed Bundle / APK**.
+
+Antes de generarlo, subí el `versionCode` en `android/app/build.gradle` si ya habías publicado una versión anterior.
+
+## 7. Checklist de Play Console
+
+- [x] ~~Definir el `appId` definitivo~~ → `com.HKemtrentainment.retocoach`
+- [x] ~~Crear el keystore de firma~~ → configurado, ver sección 5
 - [ ] Política de privacidad con URL pública — obligatoria porque AdMob recolecta el ID de publicidad. Se puede hostear en el mismo GitHub Pages
 - [ ] Formulario de **Data Safety** declarando ese ID de publicidad
 - [ ] Cuestionario de clasificación de contenido (IARC)
@@ -137,6 +165,6 @@ Play exige formato **AAB**, no APK. La primera vez te va a pedir crear un *keyst
 
 Sobre la revisión: Google mira con más atención las apps de bienestar y salud. El aviso de que la app no reemplaza procesos terapéuticos, que ya está visible en la bienvenida y en el menú, juega a favor. Conviene no usar en la ficha de Play palabras que suenen a promesa terapéutica ("cura", "tratamiento", "ansiedad") y mantener el vocabulario en desarrollo personal y autoconocimiento.
 
-## 7. Actualizar la app más adelante
+## 8. Actualizar la app más adelante
 
 En `android/app/build.gradle` se sube el `versionCode` (un entero, siempre mayor al anterior) y el `versionName` (lo que ve el usuario, por ejemplo `1.1`). Después se genera un AAB nuevo y se sube a Play. Las actualizaciones suelen revisarse en horas, más rápido que la primera publicación.
