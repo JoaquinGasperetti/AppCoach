@@ -4,42 +4,52 @@ El proyecto ya está configurado para Capacitor. La carpeta `docs/` cumple doble
 
 ---
 
-## 1. Requisitos previos
+## 1. Entorno
 
-| Programa | Para qué | Nota |
-|---|---|---|
-| [Node.js LTS](https://nodejs.org) | Ejecutar Capacitor | Instalador estándar de Windows |
-| [Android Studio](https://developer.android.com/studio) | SDK, emulador y compilación | ~10 GB con el SDK |
+| Programa | Versión verificada |
+|---|---|
+| [Node.js](https://nodejs.org) | v24.18.0 |
+| npm | 11.16.0 |
+| [Android Studio](https://developer.android.com/studio) | con SDK 36.1 y build-tools 36.0.0 |
+| JDK 21 (incluido en Android Studio) | 21.0.10 |
 
-Android Studio ya incluye el Java que hace falta: no instales un JDK por separado.
+> ⚠️ **No uses el Java del sistema para compilar.** Si tenés un JDK 25 instalado aparte, Gradle no lo soporta. Compilando desde Android Studio esto se resuelve solo, porque usa su JDK 21 interno. Si necesitás la línea de comandos, exportá primero:
+>
+> ```bash
+> JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+> ```
 
-Al abrir Android Studio por primera vez, dejá que descargue el **Android SDK** que te propone el asistente de bienvenida.
+## 2. Flujo de trabajo
 
-## 2. Generar el proyecto Android
+La carpeta `android/` **ya está generada y commiteada**, con Capacitor 8 apuntando a `targetSdk 36` y `minSdk 24` (Android 7 en adelante, ~98% de los dispositivos).
 
-Desde la raíz del repositorio:
+Después de clonar el repo por primera vez:
 
 ```bash
 npm install
 ```
 
-```bash
-npx cap add android
-```
-
-Eso crea la carpeta `android/` con el proyecto nativo. Después, cada vez que cambies algo en `docs/`:
+Cada vez que cambies algo en `docs/`, para pasar los cambios a la app:
 
 ```bash
 npx cap sync
 ```
 
-Y para abrirlo en Android Studio:
+Y para abrir el proyecto en Android Studio:
 
 ```bash
 npx cap open android
 ```
 
 Desde Android Studio se corre con el botón ▶, sea en el emulador o en tu celular conectado por USB con la depuración USB activada.
+
+Para compilar un APK de prueba sin abrir Android Studio:
+
+```bash
+cd android && ./gradlew assembleDebug
+```
+
+El APK queda en `android/app/build/outputs/apk/debug/app-debug.apk` (~4 MB). La primera compilación tarda varios minutos porque descarga Gradle y las dependencias; las siguientes son mucho más rápidas.
 
 ## 3. El identificador de la app
 
