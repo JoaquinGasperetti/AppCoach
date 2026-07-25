@@ -27,7 +27,7 @@ const DAYS = [
   },
   {
     num: 3,
-    title: "Juicios: opiniones, no verdades",
+    title: "Juicios: son interpretaciones, no verdades absolutas",
     consigna:
       "Gran parte de lo que creés sobre vos no son hechos: son juicios. Y los juicios se pueden revisar.",
     audioScript:

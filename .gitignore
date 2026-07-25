@@ -12,6 +12,10 @@ android/app/build/
 android/build/
 android/.gradle/
 android/local.properties
+
+# Configuración local de Android Studio
+android/.idea/
+*.iml
 android/app/release/
 android/app/src/main/assets/public/
 *.aab

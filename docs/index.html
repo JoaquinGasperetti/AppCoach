@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Reto 7D Coach</title>
-  <meta name="description" content="Reto interactivo de 7 días guiado por tu coach ontológica. 3 minutos por día para transformar tu diálogo interior." />
-  <meta name="theme-color" content="#3E5C4B" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233E5C4B'/%3E%3Ctext x='32' y='42' font-family='Georgia' font-size='28' fill='%23F5EFE4' text-anchor='middle'%3E7D%3C/text%3E%3C/svg%3E" />
+  <title>Reto 7D — Cabral Coscarelli</title>
+  <meta name="description" content="Reto interactivo de 7 días de coaching ontológico con Cabral Coscarelli. 3 minutos por día para transformar tu diálogo interior." />
+  <meta name="theme-color" content="#004AAD" />
+  <link rel="icon" href="img/logo-badge.png" />
+  <link rel="apple-touch-icon" href="img/logo-badge.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -18,8 +19,8 @@
     <!-- ═══════════ BIENVENIDA ═══════════ -->
     <section id="view-welcome" class="view">
       <div class="welcome-hero">
-        <div class="logo-mark">7D</div>
-        <h1 class="app-title">Reto 7D Coach</h1>
+        <img class="logo-full" src="img/logo-full.png" alt="Cabral Coscarelli — Coaching Ontológico" />
+        <h1 class="app-title">Reto 7D</h1>
         <p class="app-tagline">7 días · 3 minutos por día<br />para transformar tu diálogo interior</p>
       </div>
 
@@ -34,8 +35,8 @@
             <div><strong>Reflexioná</strong> con una mini actividad guiada</div>
           </li>
           <li>
-            <span class="wl-icon">🌱</span>
-            <div><strong>Construí</strong> una nueva forma de mirarte</div>
+            <span class="wl-icon">📅</span>
+            <div><strong>Un día por vez:</strong> cada ejercicio se abre 24 h después del anterior</div>
           </li>
         </ul>
 
@@ -44,7 +45,7 @@
         </div>
 
         <button id="btn-start" class="btn btn-primary btn-big">Comenzar el reto</button>
-        <p class="welcome-coach">Guiado por <strong>tu Coach Ontológica Profesional</strong></p>
+        <p class="welcome-coach">Guiado por <strong>Cabral Coscarelli</strong> · Coaching Ontológico</p>
       </div>
     </section>
 
@@ -52,8 +53,11 @@
     <section id="view-home" class="view">
       <header class="home-header">
         <div class="home-brand">
-          <div class="logo-mark logo-sm">7D</div>
-          <span>Reto 7D Coach</span>
+          <img class="logo-badge" src="img/logo-badge.png" alt="" />
+          <span class="home-brand-text">
+            <strong>Reto 7D</strong>
+            <small>Cabral Coscarelli</small>
+          </span>
         </div>
         <button id="btn-settings" class="icon-btn" aria-label="Menú y ajustes">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
@@ -67,6 +71,14 @@
         </div>
         <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
         <p id="progress-hint" class="progress-hint">Empezá hoy: son solo 3 minutos.</p>
+      </div>
+
+      <div id="next-unlock" class="next-unlock" hidden>
+        <span class="next-unlock-icon">⏳</span>
+        <div>
+          <strong id="next-unlock-time">Disponible en 24 h</strong>
+          <span id="next-unlock-text">Un ejercicio por día, para que lo trabajado tenga tiempo de asentarse.</span>
+        </div>
       </div>
 
       <div id="day-list" class="day-list"></div>
@@ -102,7 +114,7 @@
       <h2 id="day-title" class="day-title"></h2>
 
       <div class="card consigna-card">
-        <span class="card-label">Consigna del día</span>
+        <span class="card-label">Frase del día</span>
         <p id="day-consigna"></p>
       </div>
 
@@ -139,11 +151,16 @@
       <div class="progress-bar progress-bar-lg" id="done-progress"></div>
       <p id="done-progress-label" class="done-progress-label"></p>
 
+      <div id="done-next" class="done-next" hidden>
+        <strong id="done-next-title">Nos vemos mañana ⏳</strong>
+        <span id="done-next-text">El próximo ejercicio se abre en 24 h.</span>
+      </div>
+
       <div id="done-cta" class="cta-card" hidden>
         <span id="cta-badge" class="cta-badge">Beneficio especial</span>
         <h3 id="cta-title">¿Te gustaría ir más profundo?</h3>
         <p id="cta-text">Reservá una sesión de coaching individual y trabajemos juntos lo que apareció en estos días.</p>
-        <button id="btn-book" class="btn btn-accent btn-big">Reservar mi sesión</button>
+        <button id="btn-book" class="btn btn-accent btn-big">Quiero mi sesión</button>
       </div>
 
       <button id="btn-done-home" class="btn btn-ghost btn-big">Volver al inicio</button>
@@ -180,13 +197,15 @@
   <div id="modal-book" class="overlay" hidden>
     <div class="modal">
       <button class="modal-close" data-close="modal-book" aria-label="Cerrar">✕</button>
-      <div class="modal-icon">🗓️</div>
+      <img class="modal-logo" src="img/logo-full.png" alt="Cabral Coscarelli — Coaching Ontológico" />
       <h3>Reservá tu sesión</h3>
       <p id="book-discount" class="book-discount" hidden>🎉 Por completar el reto: <strong>20% de descuento</strong> en tu primera sesión</p>
-      <p>Una sesión individual de coaching ontológico para profundizar lo que descubriste en el reto.</p>
-      <a id="btn-book-wa" class="btn btn-primary btn-big" href="https://wa.me/5491100000000?text=Hola!%20Complet%C3%A9%20el%20Reto%207D%20y%20quiero%20reservar%20una%20sesi%C3%B3n" target="_blank" rel="noopener">Reservar por WhatsApp</a>
-      <a id="btn-book-mail" class="btn btn-ghost btn-big" href="mailto:coach@ejemplo.com?subject=Quiero%20reservar%20una%20sesi%C3%B3n%20(Reto%207D)">Reservar por email</a>
-      <small class="modal-note">Enlaces de demostración: se configurarán con el contacto real de la coach.</small>
+      <p>Escribime por Instagram y coordinamos una sesión individual de coaching ontológico para profundizar lo que descubriste en el reto.</p>
+      <a class="btn btn-instagram btn-big" href="https://www.instagram.com/cabralcoscarelli_coaching/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        Escribirme por Instagram
+      </a>
+      <small class="modal-note">@cabralcoscarelli_coaching</small>
     </div>
   </div>
 
@@ -218,6 +237,14 @@
       <div class="sheet-handle"></div>
       <h3>Menú</h3>
 
+      <button id="set-notif" class="sheet-item">
+        <span class="sheet-item-icon">🔔</span>
+        <span class="sheet-item-text">
+          <strong id="notif-title">Recordatorios</strong>
+          <small id="notif-desc">Que te avisemos cuando se abra el próximo día</small>
+        </span>
+      </button>
+
       <button id="set-premium" class="sheet-item">
         <span class="sheet-item-icon">✨</span>
         <span class="sheet-item-text">
@@ -238,15 +265,15 @@
         <span class="sheet-item-icon">🔓</span>
         <span class="sheet-item-text">
           <strong>Modo demo</strong>
-          <small id="demo-desc">Desbloquear los 7 días para revisar el prototipo</small>
+          <small id="demo-desc">Saltea la espera de 24 h para revisar el prototipo</small>
         </span>
       </button>
 
       <button id="set-book" class="sheet-item">
-        <span class="sheet-item-icon">🗓️</span>
+        <span class="sheet-item-icon">💬</span>
         <span class="sheet-item-text">
           <strong>Reservar una sesión</strong>
-          <small>Coaching ontológico individual</small>
+          <small>Escribime por Instagram</small>
         </span>
       </button>
 
@@ -266,11 +293,12 @@
         </span>
       </button>
 
-      <p class="sheet-footer">Reto 7D Coach · Prototipo v0.1</p>
+      <p class="sheet-footer">Reto 7D · Cabral Coscarelli Coaching Ontológico<br />Prototipo v0.2</p>
     </div>
   </div>
 
   <script src="js/content.js"></script>
+  <script src="js/notifications.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
