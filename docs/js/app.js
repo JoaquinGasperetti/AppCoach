@@ -4,7 +4,7 @@
   "use strict";
 
   /* Un ejercicio por día: el siguiente se abre 24 h después de completar
-     el anterior. El modo demo saltea esta espera para poder revisar todo. */
+     el anterior. */
   const LOCK_MS = 24 * 60 * 60 * 1000;
 
   /* ─────────── Estado (localStorage) ─────────── */
@@ -16,7 +16,6 @@
     completedAt: {},    // { 1: timestamp } — para calcular las 24 h
     reflections: {},    // { 1: "texto", ... }
     extraUnlocked: false,
-    demo: false,        // modo demo: saltea la espera de 24 h
     notifEnabled: false,
     notifAsked: false,  // el permiso se pide una sola vez, sin insistir
   };
@@ -75,7 +74,6 @@
   /** "done" | "available" | "waiting" | "locked" */
   function dayStatus(num) {
     if (state.completed.includes(num)) return "done";
-    if (state.demo) return "available";
     if (num > 1 && !state.completed.includes(num - 1)) return "locked";
     return Date.now() >= unlockAt(num) ? "available" : "waiting";
   }
@@ -406,7 +404,7 @@
 
     // Aviso de la espera de 24 h
     const nextBox = $("done-next");
-    if (!finished && num < 7 && !state.demo) {
+    if (!finished && num < 7) {
       nextBox.hidden = false;
       $("done-next-title").textContent = "Nos vemos mañana ⏳";
       $("done-next-text").textContent = state.notifEnabled
@@ -526,10 +524,6 @@
       ? "Que te avisemos cuando se abra el próximo día"
       : "Disponible en la app instalada, no en la web";
 
-    $("demo-desc").textContent = state.demo
-      ? "Activado: sin espera entre días"
-      : "Saltea la espera de 24 h para revisar el prototipo";
-
     $("set-extra-desc").textContent = state.extraUnlocked
       ? "Contenido desbloqueado · Ver afirmaciones"
       : "Desbloqueá contenido viendo un anuncio";
@@ -578,13 +572,6 @@
     $("set-notif").addEventListener("click", toggleNotifications);
 
     $("set-extra").addEventListener("click", handleExtra);
-
-    $("set-demo").addEventListener("click", () => {
-      state.demo = !state.demo;
-      saveState();
-      renderSettings();
-      renderHome();
-    });
 
     $("set-book").addEventListener("click", () => {
       closeOverlay("sheet-settings");
