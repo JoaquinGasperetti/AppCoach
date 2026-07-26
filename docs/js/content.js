@@ -1,10 +1,12 @@
 /* ═══════════ Reto 7D Coach — Contenido de los 7 días ═══════════
-   Textos de demostración. La coach podrá reemplazarlos por sus
-   propias consignas, audios y actividades. */
+   Los audios son las grabaciones reales de la coach y viven en
+   docs/audio/. El campo audioScript guarda el texto que se grabó,
+   como referencia para subtítulos o para regrabar más adelante. */
 
 const DAYS = [
   {
     num: 1,
+    audioFile: "audio/dia-1.mp3",
     title: "El observador que sos",
     consigna:
       "No vemos las cosas como son: las vemos como somos. Hoy vas a empezar a distinguir la mirada con la que interpretás tu mundo.",
@@ -16,6 +18,7 @@ const DAYS = [
   },
   {
     num: 2,
+    audioFile: "audio/dia-2.mp3",
     title: "El poder de tu lenguaje",
     consigna:
       "El lenguaje no solo describe la realidad: la genera. Las palabras que elegís abren o cierran posibilidades.",
@@ -27,6 +30,7 @@ const DAYS = [
   },
   {
     num: 3,
+    audioFile: "audio/dia-3.mp3",
     title: "Juicios: son interpretaciones, no verdades absolutas",
     consigna:
       "Gran parte de lo que creés sobre vos no son hechos: son juicios. Y los juicios se pueden revisar.",
@@ -38,6 +42,7 @@ const DAYS = [
   },
   {
     num: 4,
+    audioFile: "audio/dia-4.mp3",
     title: "Tus emociones te informan",
     consigna:
       "Las emociones no son buenas ni malas: son información sobre lo que te importa.",
@@ -49,6 +54,7 @@ const DAYS = [
   },
   {
     num: 5,
+    audioFile: "audio/dia-5.mp3",
     title: "Pedir abre posibilidades",
     consigna:
       "Detrás de muchos malestares hay un pedido que nunca hicimos. Pedir no es debilidad: es coordinar tu vida con otros.",
@@ -60,6 +66,7 @@ const DAYS = [
   },
   {
     num: 6,
+    audioFile: "audio/dia-6.mp3",
     title: "Tu cuerpo también habla",
     consigna:
       "Cuerpo, emoción y lenguaje van juntos. Cambiar tu postura y tu respiración también cambia tu manera de estar en el mundo.",
@@ -71,6 +78,7 @@ const DAYS = [
   },
   {
     num: 7,
+    audioFile: "audio/dia-7.mp3",
     title: "Tu declaración de cambio",
     consigna:
       "Las declaraciones inauguran mundos: «basta», «sí», «no sé», «gracias». Hoy vas a declarar tu próxima etapa.",

@@ -222,25 +222,20 @@
     $("btn-complete").hidden = completed;
     $("day-completed-note").hidden = !completed;
 
-    resetAudioUI(estimateDuration(day.audioScript));
-    buildWaveform();
+    loadAudio(day);
     showView("view-day");
   }
 
-  /* ─────────── Reproductor de audio (demo) ───────────
-     Usa la voz del navegador para simular el audio de la coach.
-     Si no hay síntesis de voz disponible, simula la reproducción. */
+  /* ─────────── Reproductor de audio ───────────
+     Reproduce las grabaciones reales de la coach (docs/audio/).
+     La onda es decorativa: el relleno sigue el progreso real. */
 
   const WAVE_BARS = 28;
-  let audio = { playing: false, elapsed: 0, duration: 30, timer: null, usingSpeech: false };
-
-  function estimateDuration(script) {
-    // ~13 caracteres por segundo de habla en español
-    return Math.max(15, Math.round(script.length / 13));
-  }
+  let audioEl = null;
 
   function buildWaveform() {
     const wf = $("waveform");
+    if (wf.children.length === WAVE_BARS) return;
     wf.innerHTML = "";
     for (let i = 0; i < WAVE_BARS; i++) {
       const bar = document.createElement("i");
@@ -250,80 +245,92 @@
   }
 
   function fmtTime(s) {
+    if (!isFinite(s)) return "–:––";
     return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
   }
 
-  function resetAudioUI(duration) {
+  function ensureAudioEl() {
+    if (audioEl) return audioEl;
+    audioEl = new Audio();
+    audioEl.preload = "metadata";
+    audioEl.addEventListener("loadedmetadata", updateAudioUI);
+    audioEl.addEventListener("timeupdate", updateAudioUI);
+    audioEl.addEventListener("play", updateAudioUI);
+    audioEl.addEventListener("pause", updateAudioUI);
+    audioEl.addEventListener("ended", updateAudioUI);
+    audioEl.addEventListener("error", onAudioError);
+    return audioEl;
+  }
+
+  function loadAudio(day) {
+    const el = ensureAudioEl();
     stopAudio();
-    audio.duration = duration;
-    audio.elapsed = 0;
+    buildWaveform();
+    $("btn-play").disabled = false;
+    $("audio-error").hidden = true;
+    el.src = day.audioFile;
+    el.load();
     updateAudioUI();
+  }
+
+  /** Si el MP3 falta o no se puede decodificar, se avisa sin romper el día. */
+  function onAudioError() {
+    $("btn-play").disabled = true;
+    $("audio-error").hidden = false;
+    $("audio-current").textContent = "0:00";
+    $("audio-total").textContent = "–:––";
   }
 
   function updateAudioUI() {
-    $("audio-current").textContent = fmtTime(audio.elapsed);
-    $("audio-total").textContent = fmtTime(audio.duration);
+    const el = audioEl;
+    if (!el) return;
+    const playing = !el.paused && !el.ended;
+    const dur = el.duration;
+
+    $("audio-current").textContent = fmtTime(el.currentTime);
+    $("audio-total").textContent = fmtTime(dur);
+
     const bars = $("waveform").children;
-    const playedCount = Math.round((audio.elapsed / audio.duration) * bars.length);
+    const ratio = isFinite(dur) && dur > 0 ? el.currentTime / dur : 0;
+    const played = Math.round(ratio * bars.length);
     for (let i = 0; i < bars.length; i++) {
-      bars[i].classList.toggle("played", i < playedCount);
-    }
-    $("icon-play").style.display = audio.playing ? "none" : "";
-    $("icon-pause").style.display = audio.playing ? "" : "none";
-  }
-
-  function tick() {
-    audio.elapsed = Math.min(audio.elapsed + 0.25, audio.duration);
-    if (audio.elapsed >= audio.duration) finishAudio();
-    updateAudioUI();
-  }
-
-  function playAudio() {
-    if (audio.elapsed >= audio.duration) audio.elapsed = 0;
-    audio.playing = true;
-
-    if ("speechSynthesis" in window && currentDay) {
-      audio.usingSpeech = true;
-      if (speechSynthesis.paused) {
-        speechSynthesis.resume();
-      } else if (!speechSynthesis.speaking) {
-        const u = new SpeechSynthesisUtterance(DAYS[currentDay - 1].audioScript);
-        u.lang = "es-AR";
-        u.rate = 0.95;
-        const voice = speechSynthesis
-          .getVoices()
-          .find((v) => v.lang && v.lang.startsWith("es"));
-        if (voice) u.voice = voice;
-        u.onend = () => { if (audio.playing) finishAudio(); };
-        speechSynthesis.speak(u);
-      }
+      bars[i].classList.toggle("played", i < played);
     }
 
-    audio.timer = setInterval(tick, 250);
-    updateAudioUI();
+    $("icon-play").style.display = playing ? "none" : "";
+    $("icon-pause").style.display = playing ? "" : "none";
   }
 
-  function pauseAudio() {
-    audio.playing = false;
-    clearInterval(audio.timer);
-    if (audio.usingSpeech && speechSynthesis.speaking) speechSynthesis.pause();
-    updateAudioUI();
+  function toggleAudio() {
+    const el = ensureAudioEl();
+    if (el.paused || el.ended) {
+      if (el.ended) el.currentTime = 0;
+      el.play().catch((err) => {
+        // NotAllowedError = el navegador pidió un gesto del usuario, no es
+        // un fallo del archivo: no tiene sentido avisar de un error de carga.
+        if (err && err.name === "NotAllowedError") return;
+        onAudioError();
+      });
+    } else {
+      el.pause();
+    }
   }
 
-  function finishAudio() {
-    audio.playing = false;
-    audio.elapsed = audio.duration;
-    clearInterval(audio.timer);
+  /** Tocar la onda salta a ese punto del audio. */
+  function seekAudio(evt) {
+    const el = audioEl;
+    if (!el || !isFinite(el.duration)) return;
+    const box = $("waveform").getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (evt.clientX - box.left) / box.width));
+    el.currentTime = ratio * el.duration;
     updateAudioUI();
   }
 
   function stopAudio() {
-    audio.playing = false;
-    clearInterval(audio.timer);
-    if (audio.usingSpeech) {
-      speechSynthesis.cancel();
-      audio.usingSpeech = false;
-    }
+    if (!audioEl) return;
+    audioEl.pause();
+    audioEl.currentTime = 0;
+    updateAudioUI();
   }
 
   /* ─────────── Completar día + anuncio intersticial ─────────── */
@@ -539,9 +546,8 @@
       renderHome();
       showView("view-home");
     });
-    $("btn-play").addEventListener("click", () =>
-      audio.playing ? pauseAudio() : playAudio()
-    );
+    $("btn-play").addEventListener("click", toggleAudio);
+    $("waveform").addEventListener("click", seekAudio);
     $("btn-complete").addEventListener("click", completeDay);
     $("day-reflection").addEventListener("blur", saveReflection);
 
@@ -619,8 +625,6 @@
       if (!document.hidden && $("view-home").classList.contains("active")) renderHome();
     });
 
-    // Cargar voces (algunos navegadores las cargan de forma asíncrona)
-    if ("speechSynthesis" in window) speechSynthesis.getVoices();
   }
 
   /* ─────────── Arranque ─────────── */

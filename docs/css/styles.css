@@ -445,7 +445,9 @@ body {
   gap: 3px;
   height: 36px;
   margin-bottom: 4px;
+  cursor: pointer;
 }
+.waveform:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 4px; }
 .waveform i {
   flex: 1;
   border-radius: 2px;
@@ -462,7 +464,16 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.audio-note { font-size: 0.76rem; color: var(--muted); margin-top: 12px; }
+.audio-error {
+  font-size: 0.8rem;
+  color: var(--danger);
+  background: #FBECEA;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 12px;
+}
+
+.play-btn:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
 
 /* Actividad */
 .activity-card p { font-size: 0.95rem; margin-bottom: 12px; }

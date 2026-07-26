@@ -71,15 +71,13 @@ Vive en cinco lugares que tienen que coincidir. Si alguna vez hay que cambiarlo,
 
 El prototipo simula cuatro cosas que en la app real necesitan código nativo.
 
-### 4.1 Audios reales
+### 4.1 Audios reales — ✅ hecho
 
-Hoy `docs/js/app.js` usa `speechSynthesis` (la voz del teléfono) como demostración. Cuando la coach grabe los audios:
+Los 7 audios de la coach están en `docs/audio/dia-1.mp3` … `dia-7.mp3` (MP3 128 kbps, entre 26 y 51 segundos, 3,9 MB en total) y se referencian desde el campo `audioFile` de cada día en `docs/js/content.js`.
 
-1. Guardar los archivos como `docs/audio/dia-1.mp3` … `dia-7.mp3`.
-2. Agregar a cada día en `docs/js/content.js` un campo `audioFile`.
-3. Reemplazar el reproductor simulado por un `<audio>` real de HTML5, que dentro de Capacitor funciona sin plugin.
+El reproductor usa el `Audio` nativo del navegador, sin plugin: funciona igual en la web y dentro de Capacitor. La onda es decorativa pero el relleno sigue el progreso real, y se puede tocar para saltar a un punto. Si un archivo faltara o no se pudiera decodificar, se muestra un aviso y se deshabilita el botón en lugar de romper el día.
 
-Formato recomendado: MP3, mono, 96 kbps. Con 7 audios de 30–60 segundos, la app pesa apenas unos pocos MB.
+Para reemplazar un audio, basta con pisar el archivo correspondiente en `docs/audio/` y correr `npx cap sync`.
 
 ### 4.2 Anuncios (AdMob)
 

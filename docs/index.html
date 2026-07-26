@@ -126,11 +126,11 @@
             <svg id="icon-pause" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" style="display:none"><rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/></svg>
           </button>
           <div class="audio-track">
-            <div class="waveform" id="waveform"></div>
-            <div class="audio-times"><span id="audio-current">0:00</span><span id="audio-total">0:30</span></div>
+            <div class="waveform" id="waveform" role="slider" aria-label="Progreso del audio" tabindex="0"></div>
+            <div class="audio-times"><span id="audio-current">0:00</span><span id="audio-total">–:––</span></div>
           </div>
         </div>
-        <p class="audio-note">Voz de demostración generada por tu dispositivo. En la versión final vas a escuchar el audio real de la coach.</p>
+        <p id="audio-error" class="audio-error" hidden>No se pudo cargar el audio. Revisá tu conexión y volvé a intentar.</p>
       </div>
 
       <div class="card activity-card">
