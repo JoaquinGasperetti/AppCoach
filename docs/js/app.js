@@ -15,7 +15,6 @@
     completed: [],      // números de día completados
     completedAt: {},    // { 1: timestamp } — para calcular las 24 h
     reflections: {},    // { 1: "texto", ... }
-    premium: false,     // "compra" simulada para quitar anuncios
     extraUnlocked: false,
     demo: false,        // modo demo: saltea la espera de 24 h
     notifEnabled: false,
@@ -51,7 +50,7 @@
     document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
     $(id).classList.add("active");
     window.scrollTo(0, 0);
-    $("ad-banner").classList.toggle("show", id === "view-home" && !state.premium);
+    $("ad-banner").classList.toggle("show", id === "view-home");
     if (id === "view-home") startCountdown();
     else stopCountdown();
   }
@@ -165,7 +164,7 @@
       $("btn-extra").textContent = "Desbloquear";
     }
 
-    $("ad-banner").classList.toggle("show", !state.premium);
+    $("ad-banner").classList.add("show");
   }
 
   /** Aviso superior con la cuenta regresiva del próximo día. */
@@ -344,13 +343,9 @@
       scheduleReminders(currentDay);
     }
 
-    if (state.premium) {
-      showDone(currentDay);
-    } else {
-      runCountdownAd("overlay-ad", "btn-ad-close", "Continuar", () =>
-        showDone(currentDay)
-      );
-    }
+    runCountdownAd("overlay-ad", "btn-ad-close", "Continuar", () =>
+      showDone(currentDay)
+    );
   }
 
   /** Programa el aviso de desbloqueo del día siguiente. */
@@ -508,11 +503,6 @@
       ? "Que te avisemos cuando se abra el próximo día"
       : "Disponible en la app instalada, no en la web";
 
-    $("premium-title").textContent = state.premium ? "Premium activo ✓" : "Quitar anuncios";
-    $("premium-desc").textContent = state.premium
-      ? "Gracias por apoyar a tu coach. Sin anuncios."
-      : "Versión premium · USD 2,99 (simulación)";
-
     $("demo-desc").textContent = state.demo
       ? "Activado: sin espera entre días"
       : "Saltea la espera de 24 h para revisar el prototipo";
@@ -562,21 +552,6 @@
 
     // Ajustes
     $("set-notif").addEventListener("click", toggleNotifications);
-
-    $("set-premium").addEventListener("click", () => {
-      if (!state.premium) {
-        const ok = confirm(
-          "Simulación de compra:\n\n¿Activar la versión premium sin anuncios por USD 2,99?\n\n(En el prototipo no se cobra nada)"
-        );
-        if (!ok) return;
-        state.premium = true;
-      } else {
-        state.premium = false; // permite alternar para la demo
-      }
-      saveState();
-      renderSettings();
-      renderHome();
-    });
 
     $("set-extra").addEventListener("click", handleExtra);
 

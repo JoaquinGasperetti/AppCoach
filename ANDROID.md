@@ -89,13 +89,22 @@ Hay que crear una cuenta gratuita en AdMob y generar tres unidades de anuncio: b
 
 Durante el desarrollo usá los **IDs de prueba de Google**, nunca los tuyos reales: hacer clic en tus propios anuncios de producción es motivo de suspensión de la cuenta de AdMob.
 
-### 4.3 Compra para quitar anuncios
+### 4.3 Compra para quitar anuncios — pospuesta
 
-Google obliga a usar Play Billing para contenido digital y cobra 15% hasta el primer millón de dólares anuales. No se puede usar Mercado Pago ni otro medio de pago para esto.
+**Decisión: no va en la primera versión.** Se sacó del prototipo para no publicar con una compra simulada. La app sale solo con anuncios, que no requieren perfil de pagos, y la compra se agrega más adelante en una actualización.
 
-Lo más práctico es [RevenueCat](https://www.revenuecat.com), que tiene plugin de Capacitor y es gratis hasta cierto volumen. Resuelve la validación de la compra, que es la parte molesta de hacer a mano.
+Cuando llegue el momento, esto es lo que hay que tener en cuenta:
 
-El botón de reservar sesión por WhatsApp **no** entra en esta regla: es un servicio prestado fuera de la app, y Google no cobra comisión sobre eso.
+- **Antes que nada, la cuenta de comerciante.** Una cuenta de Play que solo publicó apps gratuitas no tiene perfil de pagos. Crearlo pide datos fiscales y una cuenta bancaria, y Google lo verifica, así que conviene arrancar el trámite con tiempo. Siendo Argentina, vale consultarlo con un contador por las implicancias impositivas.
+- **Es un producto gestionado no consumible.** La compra vive en la cuenta de Google del usuario, no en el dispositivo. Hay que consultarla en cada arranque y volver a aplicarla: nunca guardarla en `localStorage`, o el que reinstale pierde lo que pagó.
+- **Confirmar la compra dentro de las 72 h.** Si la app no acusa recibo, Google devuelve la plata automáticamente y revoca el producto.
+- **No se puede probar en un APK de debug.** Play Billing solo responde si la app viene firmada con la clave real e instalada desde Play. El camino es subir a la pista de testing interno y agregarse como *license tester*, que compra sin que le cobren.
+- **Comisión del 15%** hasta el primer millón de dólares anuales.
+- **Nunca hardcodear el precio**: se le pide a Google, que lo devuelve convertido a la moneda del usuario.
+
+Lo más práctico es [RevenueCat](https://www.revenuecat.com), que tiene plugin de Capacitor y es gratis hasta unos USD 2.500 mensuales de ingresos. Resuelve justamente las partes donde se cometen los errores caros: confirmación, restauración y validación de recibos contra un servidor.
+
+El botón de reservar sesión por Instagram **no** entra en esta regla: es un servicio prestado fuera de la app, y Google no cobra comisión sobre eso.
 
 ### 4.4 Notificaciones diarias
 
