@@ -18,6 +18,7 @@
     extraUnlocked: false,
     demo: false,        // modo demo: saltea la espera de 24 h
     notifEnabled: false,
+    notifAsked: false,  // el permiso se pide una sola vez, sin insistir
   };
 
   let state = loadState();
@@ -465,6 +466,28 @@
   }
 
   /* ─────────── Recordatorios ─────────── */
+
+  /** Pide el permiso una sola vez, al arrancar el reto. Si el usuario dice
+      que no, no se vuelve a insistir: queda el interruptor del menú. */
+  async function askNotificationsOnce() {
+    if (state.notifAsked || !Notif.isAvailable()) return;
+    state.notifAsked = true;
+    saveState();
+
+    const granted = (await Notif.hasPermission()) || (await Notif.requestPermission());
+    if (!granted) return;
+
+    state.notifEnabled = true;
+    saveState();
+    renderHome();
+
+    // Si ya había un día esperando las 24 h, programa su aviso.
+    const next = nextDayNumber();
+    if (next && next > 1 && dayStatus(next) === "waiting") {
+      await Notif.scheduleUnlock(next, new Date(unlockAt(next)));
+    }
+  }
+
   async function toggleNotifications() {
     if (!Notif.isAvailable()) {
       alert(
@@ -520,6 +543,7 @@
       saveState();
       renderHome();
       showView("view-home");
+      askNotificationsOnce();
     });
 
     // Inicio
@@ -577,7 +601,8 @@
       if (!ok) return;
       const keepNotif = state.notifEnabled;
       await Notif.cancelAll();
-      state = { ...defaultState, onboarded: true, notifEnabled: keepNotif, completedAt: {}, reflections: {} };
+      // Reiniciar el reto no vuelve a pedir el permiso: ya se decidió una vez.
+      state = { ...defaultState, onboarded: true, notifEnabled: keepNotif, notifAsked: true, completedAt: {}, reflections: {} };
       saveState();
       renderSettings();
       renderHome();
@@ -608,6 +633,9 @@
     if (state.onboarded) {
       renderHome();
       showView("view-home");
+      // Quien ya había pasado la bienvenida antes de que existiera este pedido
+      // también recibe la consulta, una sola vez.
+      askNotificationsOnce();
     } else {
       showView("view-welcome");
     }
