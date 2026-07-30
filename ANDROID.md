@@ -79,15 +79,56 @@ El reproductor usa el `Audio` nativo del navegador, sin plugin: funciona igual e
 
 Para reemplazar un audio, basta con pisar el archivo correspondiente en `docs/audio/` y correr `npx cap sync`.
 
-### 4.2 Anuncios (AdMob)
+### 4.2 Anuncios (AdMob) — ✅ implementado
 
-```bash
-npm install @capacitor-community/admob
+Toda la lógica vive en [`docs/js/ads.js`](docs/js/ads.js). Los anuncios nunca bloquean al usuario: si algo falla, la app continúa como si no existieran.
+
+| Formato | Dónde aparece | Unidad |
+|---|---|---|
+| Banner | Solo en el inicio | `…/6988049903` |
+| Intersticial | Al completar un día | `…/3048804892` |
+| Bonificado | Voluntario, desbloquea afirmaciones | `…/2857233203` |
+
+App ID: `ca-app-pub-2266949018056491~2024477774`, declarado en `strings.xml` y referenciado desde el manifiesto.
+
+> ⚠️ **`MODO_PRUEBA` está en `true`.** Mientras esté así se usan las unidades de prueba de Google. **Ponerlo en `false` únicamente en el build que se sube a producción.** Hacer clic en un anuncio real propio es motivo de suspensión de la cuenta de AdMob, y esa suspensión no siempre se revierte.
+
+#### Consentimiento (UMP) — obligatorio
+
+Desde enero de 2024 Google exige una plataforma de consentimiento certificada para mostrar anuncios a usuarios del Espacio Económico Europeo, Reino Unido y Suiza. Sin ella, esos usuarios solo reciben anuncios limitados, con ingresos mucho menores.
+
+`ads.js` resuelve el flujo al arrancar: consulta el estado, muestra el formulario si corresponde y habilita en el menú un acceso a **Preferencias de privacidad** para que el usuario pueda cambiar su decisión después, que también es requisito. Ese botón solo aparece donde la normativa aplica.
+
+Falta un paso **fuera del código**: en la consola de AdMob, dentro de *Privacidad y mensajes*, hay que crear el mensaje de consentimiento del EEE y publicarlo. Si no se crea, el formulario no tiene nada que mostrar.
+
+#### Reglas de ubicación que respeta la implementación
+
+AdMob suspende cuentas por ubicaciones indebidas, así que estas decisiones son deliberadas:
+
+- **El intersticial va solo en la transición de completar un día**, que es una pausa natural del contenido. Está expresamente prohibido mostrarlo al abrir o cerrar la app, o en medio de una tarea.
+- **Un intersticial por sesión como máximo**: al abrirse un ejercicio por día, el usuario ve uno solo por vez que entra.
+- **El banner va únicamente en el inicio**, nunca sobre el reproductor ni sobre el campo de escritura, para evitar clics accidentales.
+- **El bonificado es siempre opcional** y no entrega el premio si el usuario cierra antes de terminarlo, pero tampoco le impide seguir usando la app.
+- `maxAdContentRating` está en `PG` para que no aparezcan anuncios inapropiados junto al contenido de coaching.
+- `tagForChildDirectedTreatment` en `false`: la app es para adultos y no debe declararse como dirigida a menores.
+
+#### Permisos agregados
+
+```
+ACCESS_NETWORK_STATE          requerido por el SDK
+com.google.android.gms.permission.AD_ID    identificador de publicidad
 ```
 
-Hay que crear una cuenta gratuita en AdMob y generar tres unidades de anuncio: banner, intersticial y recompensado. En el prototipo ya están los tres puntos de integración marcados en `app.js`: `ad-banner`, `runCountdownAd()` para el intersticial y `handleExtra()` para el recompensado.
+El SDK además incorpora por sí solo los permisos `ACCESS_ADSERVICES_*` del Privacy Sandbox de Android. El `AD_ID` es el que hay que declarar en el formulario de Data Safety de Play.
 
-Durante el desarrollo usá los **IDs de prueba de Google**, nunca los tuyos reales: hacer clic en tus propios anuncios de producción es motivo de suspensión de la cuenta de AdMob.
+#### Antes de publicar con anuncios
+
+- [ ] Crear y publicar el mensaje de consentimiento del EEE en la consola de AdMob
+- [ ] Poner `MODO_PRUEBA = false` en `docs/js/ads.js`
+- [ ] Vincular la app de AdMob con la ficha de Google Play
+- [ ] Declarar en Play que la app contiene anuncios
+- [ ] Publicar un `app-ads.txt` en el sitio declarado como web del desarrollador
+- [ ] Probar en un dispositivo real que el banner no tape ningún botón
 
 ### 4.3 Compra para quitar anuncios — pospuesta
 

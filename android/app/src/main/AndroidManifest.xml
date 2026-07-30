@@ -25,6 +25,17 @@
 
         </activity>
 
+        <!-- Identificador de la app en AdMob. Si falta, la app se cierra al abrir. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+
+        <!-- Retrasa la inicialización del SDK hasta que el usuario resuelva el
+             consentimiento, en lugar de hacerlo automáticamente al abrir. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -39,4 +50,10 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Requeridos por el SDK de anuncios de Google -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Identificador de publicidad. Obligatorio declararlo desde Android 13
+         y debe figurar en el formulario de Data Safety de Play. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 </manifest>

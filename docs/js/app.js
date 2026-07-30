@@ -50,9 +50,21 @@
     document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
     $(id).classList.add("active");
     window.scrollTo(0, 0);
-    $("ad-banner").classList.toggle("show", id === "view-home");
+    mostrarBannerEn(id === "view-home");
     if (id === "view-home") startCountdown();
     else stopCountdown();
+  }
+
+  /* El banner solo va en el inicio. En la app real lo dibuja AdMob por
+     encima del contenido; en la web se usa el recuadro de simulación. */
+  function mostrarBannerEn(visible) {
+    if (Ads.esNativo()) {
+      $("ad-banner").classList.remove("show");
+      if (visible) Ads.mostrarBanner();
+      else Ads.ocultarBanner();
+    } else {
+      $("ad-banner").classList.toggle("show", visible);
+    }
   }
 
   function openOverlay(id) { $(id).hidden = false; }
@@ -331,20 +343,27 @@
     updateAudioUI();
   }
 
-  /* ─────────── Completar día + anuncio intersticial ─────────── */
-  function completeDay() {
+  /* ─────────── Completar día + anuncio intersticial ───────────
+     El intersticial va en la transición entre el ejercicio y la pantalla
+     de cierre: una pausa natural del contenido, que es la única ubicación
+     que permite AdMob. Si el anuncio no carga, se pasa de largo. */
+  async function completeDay() {
     if (!currentDay) return;
+    const dia = currentDay;
     saveReflection();
-    if (!state.completed.includes(currentDay)) {
-      state.completed.push(currentDay);
-      state.completedAt[currentDay] = Date.now();
+    if (!state.completed.includes(dia)) {
+      state.completed.push(dia);
+      state.completedAt[dia] = Date.now();
       saveState();
-      scheduleReminders(currentDay);
+      scheduleReminders(dia);
     }
 
-    runCountdownAd("overlay-ad", "btn-ad-close", "Continuar", () =>
-      showDone(currentDay)
-    );
+    if (Ads.esNativo()) {
+      await Ads.mostrarIntersticial();
+      showDone(dia);
+    } else {
+      runCountdownAd("overlay-ad", "btn-ad-close", "Continuar", () => showDone(dia));
+    }
   }
 
   /** Programa el aviso de desbloqueo del día siguiente. */
@@ -436,20 +455,35 @@
     openOverlay("modal-book");
   }
 
-  /* ─────────── Contenido extra (anuncio recompensado) ─────────── */
-  function handleExtra() {
+  /* ─────────── Contenido extra (anuncio recompensado) ───────────
+     Siempre voluntario: el usuario decide verlo. Si cierra el anuncio
+     antes de terminarlo no se entrega el premio, como exige AdMob, pero
+     tampoco se le impide seguir usando la app. */
+  async function handleExtra() {
     closeOverlay("sheet-settings");
     if (state.extraUnlocked) {
       openExtraList();
-    } else {
-      runCountdownAd("overlay-reward", "btn-reward-close", "Ver mi regalo", () => {
-        state.extraUnlocked = true;
-        saveState();
-        renderHome();
-        renderSettings();
-        openExtraList();
-      });
+      return;
     }
+
+    if (Ads.esNativo()) {
+      const ganado = await Ads.mostrarBonificado();
+      if (!ganado) {
+        alert("El regalo se desbloquea al ver el anuncio completo. Podés intentarlo de nuevo cuando quieras.");
+        return;
+      }
+      desbloquearExtra();
+    } else {
+      runCountdownAd("overlay-reward", "btn-reward-close", "Ver mi regalo", desbloquearExtra);
+    }
+  }
+
+  function desbloquearExtra() {
+    state.extraUnlocked = true;
+    saveState();
+    renderHome();
+    renderSettings();
+    openExtraList();
   }
 
   function openExtraList() {
@@ -527,6 +561,9 @@
     $("set-extra-desc").textContent = state.extraUnlocked
       ? "Contenido desbloqueado · Ver afirmaciones"
       : "Desbloqueá contenido viendo un anuncio";
+
+    // Solo aparece donde la normativa de consentimiento aplica (Europa).
+    $("set-privacidad").hidden = !Ads.requierePrivacidad();
   }
 
   /* ─────────── Eventos ─────────── */
@@ -578,6 +615,11 @@
       openBooking(state.completed.length === 7);
     });
 
+    $("set-privacidad").addEventListener("click", async () => {
+      closeOverlay("sheet-settings");
+      await Ads.abrirOpcionesPrivacidad();
+    });
+
     $("set-legal").addEventListener("click", () => {
       closeOverlay("sheet-settings");
       openOverlay("modal-legal");
@@ -615,8 +657,15 @@
   }
 
   /* ─────────── Arranque ─────────── */
-  function init() {
+  async function init() {
     bindEvents();
+
+    // El consentimiento y el SDK se resuelven antes de pedir el primer
+    // anuncio. Si tarda o falla, la app ya está usable igual.
+    Ads.init().then(() => {
+      if ($("view-home").classList.contains("active")) mostrarBannerEn(true);
+    });
+
     if (state.onboarded) {
       renderHome();
       showView("view-home");
