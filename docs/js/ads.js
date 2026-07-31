@@ -16,8 +16,10 @@ const Ads = (() => {
      En true se usan las unidades de prueba de Google. Dejarlo así durante
      todo el desarrollo: hacer clic en un anuncio real propio es motivo de
      suspensión de la cuenta de AdMob.
-     Poner en false SOLO en el build que se sube a producción. */
-  const MODO_PRUEBA = true;
+
+     ESTÁ EN false: este build sirve ANUNCIOS REALES. No tocar ninguno.
+     Volver a true apenas se retome el desarrollo. */
+  const MODO_PRUEBA = false;
 
   const REALES = {
     banner: "ca-app-pub-2266949018056491/6988049903",
