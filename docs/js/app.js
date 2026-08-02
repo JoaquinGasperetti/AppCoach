@@ -15,9 +15,10 @@
     completed: [],      // números de día completados
     completedAt: {},    // { 1: timestamp } — para calcular las 24 h
     reflections: {},    // { 1: "texto", ... }
-    extraUnlocked: false,
+    extraDays: [],      // días con las afirmaciones ya desbloqueadas
     notifEnabled: false,
     notifAsked: false,  // el permiso se pide una sola vez, sin insistir
+    theme: null,        // null = seguir al sistema; "claro" | "oscuro"
   };
 
   let state = loadState();
@@ -25,7 +26,16 @@
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? { ...defaultState, ...JSON.parse(raw) } : { ...defaultState };
+      const guardado = raw ? JSON.parse(raw) : {};
+      const s = { ...defaultState, ...guardado };
+
+      // Antes las afirmaciones se desbloqueaban una sola vez para toda la
+      // app. Quien ya las tenía conserva las del día 1 y sigue con el resto.
+      if (guardado.extraUnlocked && !guardado.extraDays) s.extraDays = [1];
+      delete s.extraUnlocked;
+
+      if (!Array.isArray(s.extraDays)) s.extraDays = [];
+      return s;
     } catch {
       return { ...defaultState };
     }
@@ -40,6 +50,33 @@
   }
 
   const $ = (id) => document.getElementById(id);
+
+  /* ─────────── Tema claro / oscuro ───────────
+     Sin elección explícita se sigue la preferencia del sistema. Apenas el
+     usuario elige uno, esa decisión manda y queda guardada. */
+  function temaDelSistema() {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "oscuro"
+      : "claro";
+  }
+
+  function temaActivo() {
+    return state.theme || temaDelSistema();
+  }
+
+  function aplicarTema() {
+    const t = temaActivo();
+    document.documentElement.dataset.theme = t;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", t === "oscuro" ? "#0F1723" : "#004AAD");
+  }
+
+  function alternarTema() {
+    state.theme = temaActivo() === "oscuro" ? "claro" : "oscuro";
+    saveState();
+    aplicarTema();
+    renderSettings();
+  }
 
   let currentDay = null;   // día abierto en la vista de día
   let countdownTimer = null;
@@ -165,17 +202,35 @@
 
     renderNextUnlock();
 
-    // Tarjeta de contenido extra
-    if (state.extraUnlocked) {
-      $("extra-card-desc").textContent = "Ya desbloqueaste tus 7 afirmaciones de regalo.";
+    renderExtraCard();
+    $("ad-banner").classList.add("show");
+  }
+
+  /* ─────────── Afirmaciones del día ───────────
+     Cada día tiene sus propias afirmaciones, sobre el tema que se trabaja
+     ese día. Se desbloquean viendo un anuncio voluntario, uno por día. */
+
+  /** Día al que corresponden las afirmaciones que se ofrecen ahora. */
+  function diaExtra() {
+    return nextDayNumber() || 7;
+  }
+
+  function extraDesbloqueado(num) {
+    return state.extraDays.includes(num);
+  }
+
+  function renderExtraCard() {
+    const num = diaExtra();
+    const day = DAYS[num - 1];
+    $("extra-card-title").textContent = `🎁 Afirmaciones del Día ${num}`;
+    if (extraDesbloqueado(num)) {
+      $("extra-card-desc").textContent = `Ya las desbloqueaste: «${day.title}».`;
       $("btn-extra").textContent = "Ver";
     } else {
       $("extra-card-desc").textContent =
-        "Mirá un anuncio breve para desbloquear 7 afirmaciones de regalo.";
+        `Tres afirmaciones sobre «${day.title}», viendo un anuncio breve.`;
       $("btn-extra").textContent = "Desbloquear";
     }
-
-    $("ad-banner").classList.add("show");
   }
 
   /** Aviso superior con la cuenta regresiva del próximo día. */
@@ -461,35 +516,42 @@
      tampoco se le impide seguir usando la app. */
   async function handleExtra() {
     closeOverlay("sheet-settings");
-    if (state.extraUnlocked) {
-      openExtraList();
+    const num = diaExtra();
+
+    if (extraDesbloqueado(num)) {
+      openExtraList(num);
       return;
     }
 
     if (Ads.esNativo()) {
       const ganado = await Ads.mostrarBonificado();
       if (!ganado) {
-        alert("El regalo se desbloquea al ver el anuncio completo. Podés intentarlo de nuevo cuando quieras.");
+        alert("Las afirmaciones se desbloquean al ver el anuncio completo. Podés intentarlo de nuevo cuando quieras.");
         return;
       }
-      desbloquearExtra();
+      desbloquearExtra(num);
     } else {
-      runCountdownAd("overlay-reward", "btn-reward-close", "Ver mi regalo", desbloquearExtra);
+      runCountdownAd("overlay-reward", "btn-reward-close", "Ver mis afirmaciones", () =>
+        desbloquearExtra(num)
+      );
     }
   }
 
-  function desbloquearExtra() {
-    state.extraUnlocked = true;
+  function desbloquearExtra(num) {
+    if (!state.extraDays.includes(num)) state.extraDays.push(num);
     saveState();
     renderHome();
     renderSettings();
-    openExtraList();
+    openExtraList(num);
   }
 
-  function openExtraList() {
+  function openExtraList(num) {
+    const day = DAYS[num - 1];
+    $("extra-modal-title").textContent = `Afirmaciones del Día ${num}`;
+    $("extra-modal-sub").textContent = day.title;
     const list = $("extra-list");
     list.innerHTML = "";
-    EXTRA_AFFIRMATIONS.forEach((a) => {
+    day.affirmations.forEach((a) => {
       const li = document.createElement("li");
       li.textContent = a;
       list.appendChild(li);
@@ -558,9 +620,17 @@
       ? "Que te avisemos cuando se abra el próximo día"
       : "Disponible en la app instalada, no en la web";
 
-    $("set-extra-desc").textContent = state.extraUnlocked
-      ? "Contenido desbloqueado · Ver afirmaciones"
-      : "Desbloqueá contenido viendo un anuncio";
+    const oscuro = temaActivo() === "oscuro";
+    $("tema-title").textContent = oscuro ? "Modo oscuro" : "Modo claro";
+    $("tema-desc").textContent = oscuro
+      ? "Tocá para pasar al modo claro"
+      : "Tocá para pasar al modo oscuro";
+    $("tema-icon").textContent = oscuro ? "🌙" : "☀️";
+
+    const nx = diaExtra();
+    $("set-extra-desc").textContent = extraDesbloqueado(nx)
+      ? `Día ${nx} desbloqueado · Ver afirmaciones`
+      : `Desbloqueá las afirmaciones del Día ${nx}`;
 
     // Solo aparece donde la normativa de consentimiento aplica (Europa).
     $("set-privacidad").hidden = !Ads.requierePrivacidad();
@@ -609,6 +679,7 @@
     $("set-notif").addEventListener("click", toggleNotifications);
 
     $("set-extra").addEventListener("click", handleExtra);
+    $("set-tema").addEventListener("click", alternarTema);
 
     $("set-book").addEventListener("click", () => {
       closeOverlay("sheet-settings");
@@ -630,8 +701,10 @@
       if (!ok) return;
       const keepNotif = state.notifEnabled;
       await Notif.cancelAll();
-      // Reiniciar el reto no vuelve a pedir el permiso: ya se decidió una vez.
-      state = { ...defaultState, onboarded: true, notifEnabled: keepNotif, notifAsked: true, completedAt: {}, reflections: {} };
+      // Reiniciar el reto no vuelve a pedir el permiso ni cambia el tema:
+      // son preferencias, no progreso.
+      const keepTheme = state.theme;
+      state = { ...defaultState, onboarded: true, notifEnabled: keepNotif, notifAsked: true, theme: keepTheme, completedAt: {}, reflections: {}, extraDays: [] };
       saveState();
       renderSettings();
       renderHome();
@@ -658,7 +731,18 @@
 
   /* ─────────── Arranque ─────────── */
   async function init() {
+    aplicarTema();
+    // Persiste de entrada el estado ya migrado, para no arrastrar el
+    // formato viejo hasta que el usuario haga algo que dispare un guardado.
+    saveState();
     bindEvents();
+
+    // Si el usuario nunca eligió tema, seguimos los cambios del sistema.
+    if (window.matchMedia) {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        if (!state.theme) aplicarTema();
+      });
+    }
 
     // El consentimiento y el SDK se resuelven antes de pedir el primer
     // anuncio. Si tarda o falla, la app ya está usable igual.

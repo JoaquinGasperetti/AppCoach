@@ -15,6 +15,11 @@ const DAYS = [
     activity:
       "Escribí tres palabras que describan cómo estás mirando tu presente hoy.",
     quote: "«Cambiá el observador y cambiará lo observado.»",
+    affirmations: [
+      "Hoy elijo desde qué lugar miro lo que me pasa.",
+      "Lo que veo habla tanto de mí como de aquello que miro.",
+      "Puedo cambiar de observador todas las veces que necesite.",
+    ],
   },
   {
     num: 2,
@@ -27,6 +32,11 @@ const DAYS = [
     activity:
       "Anotá una frase negativa que repetís seguido y reescribila como una posibilidad. Por ejemplo: «No puedo con todo» → «Hoy elijo qué es prioridad».",
     quote: "«Las palabras no se las lleva el viento: construyen mundos.»",
+    affirmations: [
+      "Las palabras con las que me hablo construyen mi día.",
+      "Puedo decir «todavía no» en lugar de «no puedo».",
+      "Elijo con cuidado lo que siembro cuando hablo de mí.",
+    ],
   },
   {
     num: 3,
@@ -39,6 +49,11 @@ const DAYS = [
     activity:
       "Identificá un juicio sobre vos que te esté frenando. ¿Qué evidencia real tenés a favor? ¿Y en contra?",
     quote: "«Tus juicios hablan más de vos que de aquello que juzgás.»",
+    affirmations: [
+      "Mis juicios son opiniones, no sentencias.",
+      "Lo que creo sobre mí también puedo revisarlo.",
+      "Un juicio sin evidencia no merece gobernar mis decisiones.",
+    ],
   },
   {
     num: 4,
@@ -51,6 +66,11 @@ const DAYS = [
     activity:
       "Nombrá la emoción que más sentiste hoy y escribí qué te está queriendo decir.",
     quote: "«Toda emoción es una puerta, si te animás a escucharla.»",
+    affirmations: [
+      "Mis emociones me informan, no me definen.",
+      "Detrás de cada emoción hay algo que me importa.",
+      "Puedo sentir sin tener que resolverlo todo de inmediato.",
+    ],
   },
   {
     num: 5,
@@ -63,6 +83,11 @@ const DAYS = [
     activity:
       "Escribí un pedido que venís postergando: ¿a quién se lo vas a hacer y cuándo?",
     quote: "«Quien no pide, decide de antemano la respuesta.»",
+    affirmations: [
+      "Pedir no me hace débil: me hace claro.",
+      "Puedo pedir ayuda sin dejar de ser capaz.",
+      "Cada pedido que hago abre una conversación que no existía.",
+    ],
   },
   {
     num: 6,
@@ -75,6 +100,11 @@ const DAYS = [
     activity:
       "Después de un minuto de respiración consciente, anotá qué notaste en tu cuerpo y en tu ánimo.",
     quote: "«El cuerpo dice lo que las palabras todavía no saben nombrar.»",
+    affirmations: [
+      "Habito mi cuerpo con presencia y calma.",
+      "Mi respiración es un lugar al que siempre puedo volver.",
+      "Cuando aflojo el cuerpo, aparecen opciones que no veía.",
+    ],
   },
   {
     num: 7,
@@ -87,16 +117,10 @@ const DAYS = [
     activity:
       "Escribí tu declaración personal para esta nueva etapa. Empezá con: «Yo declaro…».",
     quote: "«Una declaración no describe el mundo: lo inaugura.»",
+    affirmations: [
+      "Yo declaro que mi próxima etapa empieza hoy.",
+      "Lo que declaro inaugura lo que viene.",
+      "Tengo la autoridad de abrir algo nuevo en mi vida.",
+    ],
   },
-];
-
-/* Contenido extra desbloqueable con anuncio voluntario */
-const EXTRA_AFFIRMATIONS = [
-  "Hoy elijo las palabras con las que me hablo.",
-  "Mis juicios son opiniones, no sentencias.",
-  "Puedo pedir ayuda sin dejar de ser capaz.",
-  "Mis emociones me informan, no me definen.",
-  "Habito mi cuerpo con presencia y calma.",
-  "Cada conversación es una oportunidad de crear futuro.",
-  "Yo declaro que mi próxima etapa empieza hoy.",
 ];

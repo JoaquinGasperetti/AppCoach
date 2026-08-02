@@ -7,7 +7,8 @@
   --surface-soft: #F4F7FC;
   --ink: #15213A;
   --muted: #68738C;
-  --brand: #004AAD;
+  --brand: #004AAD;        /* azul de texto y bordes */
+  --brand-fill: #004AAD;   /* azul de relleno, siempre con texto blanco encima */
   --brand-dark: #00347C;
   --brand-soft: #DDE8F9;
   --accent: #B0690F;
@@ -82,7 +83,7 @@ body {
 .btn-big { padding: 16px 20px; font-size: 1.02rem; }
 .btn-sm { padding: 10px 16px; font-size: 0.88rem; width: auto; }
 
-.btn-primary { background: var(--brand); color: #fff; }
+.btn-primary { background: var(--brand-fill); color: #fff; }
 .btn-primary:hover { background: var(--brand-dark); }
 .btn-accent { background: var(--accent); color: #fff; }
 .btn-ghost {
@@ -219,7 +220,7 @@ body {
 }
 
 .progress-card {
-  background: var(--brand);
+  background: var(--brand-fill);
   color: #fff;
   border-radius: var(--radius);
   padding: 18px;
@@ -286,7 +287,7 @@ body {
 .day-item .day-state { font-size: 1.1rem; flex-shrink: 0; }
 
 .day-item.is-current { border-color: var(--brand); }
-.day-item.is-current .day-num { background: var(--brand); color: #fff; }
+.day-item.is-current .day-num { background: var(--brand-fill); color: #fff; }
 .day-item.is-done .day-num { background: var(--brand-soft); color: var(--brand); }
 .day-item.is-done .day-state { color: var(--brand); font-weight: 700; }
 .day-item.is-locked { opacity: 0.6; box-shadow: none; background: var(--surface-soft); cursor: default; }
@@ -426,7 +427,7 @@ body {
   height: 56px;
   border-radius: 50%;
   border: none;
-  background: var(--brand);
+  background: var(--brand-fill);
   color: #fff;
   display: grid;
   place-items: center;
@@ -504,7 +505,7 @@ textarea:focus { outline: 2px solid var(--brand); border-color: transparent; }
   width: 92px;
   height: 92px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--brand-fill);
   color: #fff;
   font-size: 2.6rem;
   display: grid;
@@ -708,6 +709,69 @@ textarea:focus { outline: 2px solid var(--brand); border-color: transparent; }
   font-size: 0.75rem;
   margin-top: 12px;
 }
+
+.extra-modal-sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: -4px;
+}
+
+/* ═══════════ Modo oscuro ═══════════
+   El azul de marca se aclara para que siga siendo legible sobre fondo
+   oscuro, y el de relleno se oscurece para conservar el texto blanco. */
+:root[data-theme="oscuro"] {
+  --bg: #0F1723;
+  --surface: #1A2534;
+  --surface-soft: #141D2A;
+  --ink: #E7EDF6;
+  --muted: #97A4BA;
+  --brand: #6BA8F5;
+  --brand-fill: #1B5FB8;
+  --brand-dark: #9CC5FA;
+  --brand-soft: #1E3352;
+  --accent: #E0A855;
+  --accent-soft: #2E2413;
+  --gold: #E9B44C;
+  --danger: #E5796B;
+  --line: #2B3849;
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="oscuro"] body { background: #070C13; }
+:root[data-theme="oscuro"] #app { box-shadow: 0 0 40px rgba(0, 0, 0, 0.6); }
+
+:root[data-theme="oscuro"] .logo-full { filter: brightness(0) invert(1); }
+
+:root[data-theme="oscuro"] .btn-ghost { border-color: rgba(107, 168, 245, 0.4); }
+
+:root[data-theme="oscuro"] .disclaimer-box { color: #E4B876; }
+:root[data-theme="oscuro"] .next-unlock { color: #E4B876; }
+:root[data-theme="oscuro"] .book-discount { color: #E4B876; }
+
+:root[data-theme="oscuro"] .extra-card {
+  background: linear-gradient(120deg, #182741, #14203a);
+}
+:root[data-theme="oscuro"] .extra-card-text p { color: #9FB4D4; }
+
+:root[data-theme="oscuro"] .day-item.is-locked { background: var(--surface-soft); }
+:root[data-theme="oscuro"] .day-item.is-locked .day-num { background: #232F41; color: var(--muted); }
+
+:root[data-theme="oscuro"] .waveform i { background: #2E3B4F; }
+:root[data-theme="oscuro"] .progress-bar-lg span { background: #2E3B4F; }
+
+:root[data-theme="oscuro"] .modal p { color: #B9C5D8; }
+:root[data-theme="oscuro"] .modal-close { color: var(--muted); }
+:root[data-theme="oscuro"] .sheet-handle { background: #35435A; }
+
+:root[data-theme="oscuro"] .ad-banner {
+  background: repeating-linear-gradient(45deg, #1B2534, #1B2534 12px, #16202D 12px, #16202D 24px);
+  border-top-color: #2B3849;
+  color: #8C9AB0;
+}
+
+:root[data-theme="oscuro"] .audio-error { background: #35211F; }
 
 /* Pantallas muy chicas */
 @media (max-width: 360px) {

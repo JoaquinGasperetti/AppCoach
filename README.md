@@ -12,7 +12,8 @@ Prototipo navegable de la app **Reto 7D Coach**: un reto interactivo de 7 días 
 - **Reto de 7 días**: cada día tiene consigna, audio de la coach y actividad reflexiva. Los días se desbloquean al completar el anterior.
 - **Audios reales de la coach**: los 7 audios grabados, con reproductor propio (play/pausa y salto tocando la onda).
 - **Progreso persistente**: el avance y las reflexiones se guardan en el dispositivo (localStorage).
-- **Monetización simulada**: banner en el inicio, anuncio a pantalla completa al completar un día y anuncio voluntario (recompensado) para desbloquear afirmaciones extra. La compra para quitar anuncios queda para una versión posterior.
+- **Monetización**: banner en el inicio, anuncio a pantalla completa al completar un día y un anuncio voluntario por día que desbloquea tres afirmaciones sobre el tema de esa jornada. La compra para quitar anuncios queda para una versión posterior.
+- **Modo claro y oscuro**: sigue la preferencia del sistema y se puede forzar desde el menú.
 - **Conversión a clientes**: invitación a reservar sesión al completar el día 3 y el día 7 (con descuento). Los enlaces de WhatsApp/email son de demostración.
 - **Aviso legal** visible: la app no reemplaza procesos terapéuticos.
 
