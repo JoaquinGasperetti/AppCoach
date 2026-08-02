@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  El reductor de recursos rastrea las referencias desde el código Java y
+  desde los XML. El ícono de la barra de notificaciones no aparece en
+  ninguno de los dos: se nombra como texto desde JavaScript, en
+  docs/js/notifications.js (smallIcon: "ic_stat_icon").
+
+  Sin esta regla el reductor lo da por no usado y lo borra del bundle, y
+  las notificaciones salen sin ícono o directamente fallan.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_icon" />

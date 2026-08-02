@@ -20,13 +20,27 @@ public class MainActivity extends BridgeActivity {
         // El contenido ocupa toda la pantalla, por debajo de las barras.
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
-        // Con la ventana en pantalla completa, adjustResize deja de funcionar:
-        // hay que empujar el contenido a mano cuando aparece el teclado, o si no
-        // tapa el campo de reflexión del día.
+        // Dibujando de extremo a extremo la ventana ya no reserva espacio por
+        // sí sola, así que el contenido se aparta a mano de tres cosas:
+        //
+        //  · el recorte de pantalla (muesca o cámara), para que no tape el
+        //    logo ni el botón del menú;
+        //  · las barras del sistema, por si el usuario las revela o el
+        //    dispositivo las impone;
+        //  · el teclado, que si no cubre el campo de reflexión del día.
+        //
+        // En pantalla completa adjustResize no alcanza: hay que calcularlo.
         View content = findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(content, (view, insets) -> {
-            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
-            view.setPadding(0, 0, 0, ime.bottom);
+            Insets recorte = insets.getInsets(
+                    WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.systemBars());
+            Insets teclado = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            view.setPadding(
+                    recorte.left,
+                    recorte.top,
+                    recorte.right,
+                    Math.max(recorte.bottom, teclado.bottom));
             return insets;
         });
 
